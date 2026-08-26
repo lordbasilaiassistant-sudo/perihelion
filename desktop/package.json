@@ -1,0 +1,28 @@
+{
+  "name": "icv-perihelion",
+  "productName": "ICV Perihelion",
+  "version": "0.1.0",
+  "description": "Interstellar life-support simulation — desktop edition",
+  "main": "main.js",
+  "author": "Anthony Snider",
+  "build": {
+    "appId": "com.perihelion.game",
+    "productName": "ICV Perihelion",
+    "files": [
+      "main.js",
+      "dist/**"
+    ],
+    "directories": {
+      "output": "release"
+    },
+    "win": {
+      "target": [
+        "portable"
+      ]
+    }
+  },
+  "devDependencies": {
+    "electron": "^44.0.0",
+    "electron-builder": "^26.15.3"
+  }
+}

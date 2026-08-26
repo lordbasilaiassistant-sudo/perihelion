@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ICV PERIHELION — Interstellar Life Support Simulator</title>
+</head>
+<body>
+  <canvas id="gl"></canvas>
+
+  <div id="visor">
+    <div class="visor-rim"></div>
+    <div class="visor-scan"></div>
+  </div>
+  <div id="vignette"></div>
+  <div id="fade"></div>
+
+  <div id="hud" class="hidden">
+    <div id="topbar">
+      <span class="ship-name">ICV PERIHELION</span>
+      <span id="day-label">DAY 1</span>
+      <span id="clock-label">06:00:00</span>
+    </div>
+
+    <div id="chips">
+      <div class="chip"><label>PWR</label><b id="chip-power">—</b></div>
+      <div class="chip"><label>O2</label><b id="chip-o2">—</b></div>
+      <div class="chip"><label>CO2</label><b id="chip-co2">—</b></div>
+      <div class="chip"><label>PRESS</label><b id="chip-pres">—</b></div>
+      <div class="chip"><label>H2O</label><b id="chip-water">—</b></div>
+      <div class="chip"><label>FOOD</label><b id="chip-food">—</b></div>
+    </div>
+
+    <div id="crosshair"><i></i></div>
+    <div id="prompt" class="hidden"></div>
+    <div id="holdbar" class="hidden"><i id="holdfill"></i></div>
+
+    <div id="mode-chip">BOOTS</div>
+    <div id="grav-chip">1.00 m/s²</div>
+    <div id="held-chip" class="hidden">IN HAND</div>
+
+    <div id="toasts"></div>
+
+    <div id="checklist" class="hidden">
+      <h3>DAILY CHECKLIST</h3>
+      <ul id="task-list"></ul>
+    </div>
+  </div>
+
+  <div id="brackets" class="hidden"><i></i><i></i><i></i><i></i></div>
+
+  <div id="dialogue" class="hidden">
+    <div id="dialogue-head">
+      <span id="dialogue-name">MIRA</span>
+      <span id="dialogue-role">SHIP INTELLIGENCE</span>
+    </div>
+    <div id="dialogue-text"></div>
+    <div id="dialogue-hint">[E] continue · ESC close</div>
+  </div>
+
+
+  <div id="debug-panel" class="hidden">
+    <canvas id="spark" width="260" height="56"></canvas>
+    <pre id="debug-lines"></pre>
+  </div>
+
+  <div id="console-panel" class="hidden">
+    <div id="console-log"></div>
+    <input id="console-input" autocomplete="off" spellcheck="false" placeholder="type 'help' — ~ to close" />
+  </div>
+
+  <div id="title-screen">
+    <div class="title-inner">
+      <p class="kicker">DEEP SPACE OPERATIONS · SOLE CREW</p>
+      <h1>ICV PERIHELION</h1>
+      <p class="sub">Earth → Proxima Centauri b · one human · keep the ship alive</p>
+      <div class="btn-row">
+        <button id="btn-new">NEW GAME</button>
+        <button id="btn-continue" disabled>CONTINUE</button>
+      </div>
+      <div id="controls-card">
+        <div><kbd>W A S D</kbd><span>move / thrust</span></div>
+        <div><kbd>MOUSE</kbd><span>look</span></div>
+        <div><kbd>E</kbd><span>interact / hold</span></div>
+        <div><kbd>LMB</kbd><span>grab objects</span></div>
+        <div><kbd>V</kbd><span>1st / 3rd person</span></div>
+        <div><kbd>TAB</kbd><span>daily checklist</span></div>
+        <div><kbd>SPACE</kbd><span>jump / up · suit assist</span></div>
+        <div><kbd>CTRL</kbd><span>down (jet)</span></div>
+        <div><kbd>SHIFT</kbd><span>sprint / boost</span></div>
+        <div><kbd>R</kbd><span>inertia dampers on/off</span></div>
+        <div><kbd>F3</kbd><span>debug overlay</span></div>
+        <div><kbd>~</kbd><span>console</span></div>
+      </div>
+      <p id="load-status">initializing…</p>
+      <p class="credits">audio: Kenney.nl (CC0) · built with three.js + rapier</p>
+    </div>
+  </div>
+
+  <div id="resume-overlay" class="hidden"><div>PAUSED<span>click to re-enter the ship</span></div></div>
+  <div id="err-banner" class="hidden"></div>
+
+  <script type="module" src="/src/main.ts"></script>
+</body>
+</html>

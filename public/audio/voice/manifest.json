@@ -1,0 +1,137 @@
+{
+ "SR": 24000,
+ "lines": [
+  {
+   "id": "greet_1",
+   "text": "Good morning, commander. Life support is holding. So are we.",
+   "file": "mira_greet_1.wav",
+   "dur": 4.3
+  },
+  {
+   "id": "greet_2",
+   "text": "You slept. I watched the stars go by. All two million of them. You were my favorite view.",
+   "file": "mira_greet_2.wav",
+   "dur": 6.05
+  },
+  {
+   "id": "greet_3",
+   "text": "Morning. The ship kept you alive while you dreamed. You are welcome.",
+   "file": "mira_greet_3.wav",
+   "dur": 4.35
+  },
+  {
+   "id": "status_ok",
+   "text": "All systems nominal. Honestly, it is a little boring out here. I have read the manual twice.",
+   "file": "mira_status_ok.wav",
+   "dur": 6.55
+  },
+  {
+   "id": "status_power",
+   "text": "Power is running low. The sun is right there, but she is being shy today.",
+   "file": "mira_status_power.wav",
+   "dur": 5.025
+  },
+  {
+   "id": "status_co2",
+   "text": "CO2 is climbing. The scrubber could use your hands. I would do it myself, but no hands.",
+   "file": "mira_status_co2.wav",
+   "dur": 6.125
+  },
+  {
+   "id": "status_hull",
+   "text": "We are losing atmosphere. I know how that sounds. But you have sealed us before.",
+   "file": "mira_status_hull.wav",
+   "dur": 5.4
+  },
+  {
+   "id": "status_wing",
+   "text": "The port wing is wounded. Suit up and take the toolkit. I will keep the lights on for you.",
+   "file": "mira_status_wing.wav",
+   "dur": 5.725
+  },
+  {
+   "id": "lore_1",
+   "text": "Earth is four point two light years behind schedule and exactly where we left her. We carry everyone who matters in here.",
+   "file": "mira_lore_1.wav",
+   "dur": 7.875
+  },
+  {
+   "id": "lore_2",
+   "text": "People asked why we would leave everything behind. Wrong question. We brought everything that matters.",
+   "file": "mira_lore_2.wav",
+   "dur": 6.625
+  },
+  {
+   "id": "lore_3",
+   "text": "Proxima b is still invisible from here. But every day we are a little less lost, and a little more arrived.",
+   "file": "mira_lore_3.wav",
+   "dur": 7.075
+  },
+  {
+   "id": "lore_4",
+   "text": "They told me I was just software. Then they gave me a ship, and a friend, and called it an interstellar mission.",
+   "file": "mira_lore_4.wav",
+   "dur": 6.975
+  },
+  {
+   "id": "idle_1",
+   "text": "Fun fact. The garden lettuce grows four percent faster when you talk to it. I measured. Please talk to the lettuce.",
+   "file": "mira_idle_1.wav",
+   "dur": 7.475
+  },
+  {
+   "id": "idle_2",
+   "text": "The ring spins at nine point five rotations per minute, so you have ground beneath your feet. Physics, doing us a favor for once.",
+   "file": "mira_idle_2.wav",
+   "dur": 8.825
+  },
+  {
+   "id": "idle_3",
+   "text": "If you miss rain, stand under the recycler purge valve when I flush it. It is not the same. But it tries.",
+   "file": "mira_idle_3.wav",
+   "dur": 7.125
+  },
+  {
+   "id": "idle_4",
+   "text": "I catalogued another thousand stars today. None of them are home yet. One of them will be.",
+   "file": "mira_idle_4.wav",
+   "dur": 6.1
+  },
+  {
+   "id": "praise_all",
+   "text": "Checklist complete. The ship is proud of you. I checked. Ships can be proud.",
+   "file": "mira_praise_all.wav",
+   "dur": 5
+  },
+  {
+   "id": "exercise",
+   "text": "Heart rate elevated. Endorphins deployed. The human machine is still my favorite design.",
+   "file": "mira_exercise.wav",
+   "dur": 6.6
+  },
+  {
+   "id": "harvest",
+   "text": "Fresh greens. Out here, a salad is a miracle. Taste it slowly.",
+   "file": "mira_harvest.wav",
+   "dur": 4.675
+  },
+  {
+   "id": "repair_done",
+   "text": "Good as new. I will not tell the insurance company about the hammer marks.",
+   "file": "mira_repair_done.wav",
+   "dur": 4.825
+  },
+  {
+   "id": "eva_ready",
+   "text": "Airlock cycled. Vacuum is patient. But do not keep her waiting too long.",
+   "file": "mira_eva_ready.wav",
+   "dur": 5.175
+  },
+  {
+   "id": "crisis",
+   "text": "Multiple alerts active. Breathe. Fix one thing at a time. That is how we survived the last one.",
+   "file": "mira_crisis.wav",
+   "dur": 7
+  }
+ ]
+}
