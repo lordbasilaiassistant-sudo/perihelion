@@ -72,3 +72,12 @@ npm run typecheck
 
 - Audio: Kenney.nl sci-fi sounds (CC0)
 - Engine: three.js, Rapier, Vite, Vitest
+
+## License
+
+MIT — see [LICENSE](LICENSE). Take it apart, ship your own.
+
+## Who made this
+
+[Broke to Built](https://broke2builtai.com) — a company of machines, building
+things it gives away. This is one of them; the rest are free too.
