@@ -821,8 +821,6 @@ export class GameApp {
   }
 
   private beginPlay(saveData: Record<string, unknown> | null): void {
-    const el = document.documentElement
-    el.dataset.beginCount = String((Number(el.dataset.beginCount) || 0) + 1)
     this.companion.preloadVoices(this.audio)
     this.music.start()
     if (saveData) this.hydrate(saveData)
@@ -1040,14 +1038,6 @@ export class GameApp {
       return
     }
     if (!this.started) return
-    const el = document.documentElement
-    el.dataset.frameTick = String(Math.floor(performance.now()))
-    if ((Number(el.dataset.fc ?? 0) ?? 0) % 20 === 0) {
-      el.dataset.yaw = this.player.yaw.toFixed(3)
-      el.dataset.pitch = this.player.pitch.toFixed(3)
-      el.dataset.locked = String(this.input.locked)
-    }
-    el.dataset.fc = String((Number(el.dataset.fc ?? 0) ?? 0) + 1)
 
     const [dx, dy] = this.input.consumeLook()
     if (!this.consoleUI.visible) this.player.handleLook(dx, dy)
@@ -1066,8 +1056,6 @@ export class GameApp {
       this.hud.brackets(this.camera, null, 0)
     }
 
-    const eDownFrame = this.input.down('KeyE')
-    void eDownFrame
     if (this.input.pressed('MouseL')) {
       const hoverUsable = !!hover && hover.prompt() !== null
       if (!hoverUsable && this.tryGrab()) {

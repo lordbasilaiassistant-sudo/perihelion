@@ -78,7 +78,6 @@ export class InteractionSystem {
     const need = this.holdSeconds(this.hover)
     if (need === undefined) return false
     this.holding = { entry: this.hover, t: 0 }
-    document.documentElement.dataset.tb = `${this.hover.id}@${need.toFixed(1)}`
     this.hover.onStart?.()
     return true
   }
@@ -98,7 +97,6 @@ export class InteractionSystem {
       return 1
     }
     this.holding.t += dt
-    document.documentElement.dataset.tb = `${this.holding.entry.id} t=${this.holding.t.toFixed(2)}/${need.toFixed(1)}`
     this.holding.entry.onTick?.(dt)
     if (this.holding.t >= need) {
       const done = this.holding.entry

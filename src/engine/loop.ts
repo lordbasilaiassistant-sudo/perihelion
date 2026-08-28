@@ -36,30 +36,39 @@ export class GameLoop {
   start(cb: LoopCallbacks): void {
     this.running = true
     this.last = performance.now()
+    this.lastRender = 0
     this.rendererRaw.setAnimationLoop((t) => {
-      const now = t || performance.now()
+      const now = performance.now()
+      void t
       let dtReal = (now - this.last) / 1000
       this.last = now
       if (!(dtReal > 0) || dtReal > 0.25) dtReal = 0.016
-      if (this.frameCap > 0) {
-        if (now - this.lastRender < 1000 / this.frameCap - 1.5) return
-        this.lastRender = now
-      }
-      const t0 = performance.now()
+
+      const t0 = now
       this.acc += dtReal * this.stats.warp
       const steps = stepsFor(this.acc, SIM_DT, this.maxStepsPerFrame)
       this.acc -= steps * SIM_DT
       if (steps === this.maxStepsPerFrame) this.acc = 0
       for (let i = 0; i < steps; i++) cb.tick(SIM_DT)
       const t1 = performance.now()
+      this.stats.msTick = this.stats.msTick * 0.92 + (t1 - t0) * 0.08
+      this.stats.ticksLastFrame = steps
+      this.stats.msFrame = this.stats.msFrame * 0.92 + dtReal * 1000 * 0.08
+      this.fpsTimer += dtReal
+
+      if (this.frameCap > 0 && this.lastRender > 0 && now - this.lastRender < 1000 / this.frameCap - 1.5) {
+        if (this.fpsTimer >= 0.5) {
+          this.stats.fps = Math.round(this.frames / this.fpsTimer)
+          this.frames = 0
+          this.fpsTimer = 0
+        }
+        return
+      }
+      this.lastRender = now
       cb.frame(this.acc / SIM_DT, dtReal)
       const t2 = performance.now()
-      this.stats.msTick = this.stats.msTick * 0.92 + (t1 - t0) * 0.08
       this.stats.msRender = this.stats.msRender * 0.92 + (t2 - t1) * 0.08
-      this.stats.msFrame = this.stats.msFrame * 0.92 + dtReal * 1000 * 0.08
-      this.stats.ticksLastFrame = steps
       this.frames++
-      this.fpsTimer += dtReal
       if (this.fpsTimer >= 0.5) {
         this.stats.fps = Math.round(this.frames / this.fpsTimer)
         this.frames = 0

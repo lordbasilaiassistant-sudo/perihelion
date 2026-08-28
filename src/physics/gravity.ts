@@ -116,6 +116,13 @@ export function gravityAt(f: GravityField, p: Vec3): Vec3 {
   return [f.dir[0] * mag, f.dir[1] * mag, f.dir[2] * mag]
 }
 
+/** Standing-up direction: opposite gravity, or world +Y in free fall. */
+export function upFromGravity(g: Vec3): Vec3 {
+  const m = Math.hypot(g[0], g[1], g[2])
+  if (m < 1e-8) return [0, 1, 0]
+  return [-g[0] / m, -g[1] / m, -g[2] / m]
+}
+
 export function pickField(fields: readonly GravityField[], p: Vec3): GravityField | null {
   let best: GravityField | null = null
   let bestMag = 0

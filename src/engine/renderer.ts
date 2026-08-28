@@ -18,10 +18,15 @@ export async function createRenderer(canvas: HTMLCanvasElement): Promise<GameRen
   let backend: 'webgpu' | 'webgl'
   try {
     const g = new WebGPURenderer({ canvas, antialias: true }) as unknown as RawAny
-    await g.init()
+    const init = g.init() as Promise<void>
+    const timeout = new Promise<never>((_, reject) => {
+      window.setTimeout(() => reject(new Error('WebGPU init timed out')), 2500)
+    })
+    await Promise.race([init, timeout])
     raw = g
     backend = 'webgpu'
-  } catch {
+  } catch (err) {
+    console.info('[renderer] WebGPU unavailable, using WebGL2', err)
     raw = new THREE.WebGLRenderer({ canvas, antialias: true }) as RawAny
     backend = 'webgl'
   }
@@ -30,6 +35,7 @@ export async function createRenderer(canvas: HTMLCanvasElement): Promise<GameRen
   raw.toneMappingExposure = 1.02
   raw.shadowMap.enabled = true
   raw.shadowMap.type = THREE.PCFSoftShadowMap
+  console.info(`[renderer] backend=${backend}`)
 
   const r = raw as unknown as { info?: { render?: Record<string, number> } }
 

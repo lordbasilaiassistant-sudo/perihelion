@@ -20,6 +20,7 @@ export interface CamBasis {
 
 const tmpA = new THREE.Vector3()
 const tmpB = new THREE.Vector3()
+const tmpMove = new THREE.Vector3()
 
 export class CharacterBody {
   body: RAPIER.RigidBody
@@ -53,8 +54,9 @@ export class CharacterBody {
     return this.currPos
   }
 
-  setUp(up: THREE.Vector3): void {
-    this.upSmooth.lerp(up, 0.18)
+  setUp(up: THREE.Vector3, snap = false): void {
+    if (snap) this.upSmooth.copy(up)
+    else this.upSmooth.lerp(up, 0.18)
     if (this.upSmooth.lengthSq() < 1e-8) this.upSmooth.copy(up)
     this.upSmooth.normalize()
   }
@@ -70,12 +72,13 @@ export class CharacterBody {
     this.body.setNextKinematicTranslation({ x: p.x, y: p.y, z: p.z })
   }
 
-  tickWalk(dt: number, intent: MoveIntent, basis: CamBasis, gVec: THREE.Vector3, gMag: number): void {
+  tickWalk(dt: number, intent: MoveIntent, basis: CamBasis, _gVec: THREE.Vector3, gMag: number): void {
     const up = tmpA.copy(this.upSmooth)
     const down = tmpB.copy(up).multiplyScalar(-1)
 
-    const move = new THREE.Vector3()
-      .addScaledVector(basis.right, intent.moveX)
+    const move = tmpMove
+      .copy(basis.right)
+      .multiplyScalar(intent.moveX)
       .addScaledVector(basis.fwd, intent.moveZ)
     move.addScaledVector(up, -move.dot(up))
     if (move.lengthSq() > 1e-6) move.normalize()
@@ -83,9 +86,12 @@ export class CharacterBody {
     const speed = (intent.sprint ? 5.4 : 3.15) * this.walkSpeedMult
     move.multiplyScalar(speed)
     const blend = 1 - Math.exp(-11 * dt)
+    const along = this.vel.dot(up)
+    this.vel.addScaledVector(up, -along)
     this.vel.x += (move.x - this.vel.x) * blend
-    this.vel.z += (move.z - this.vel.z) * blend
     this.vel.y += (move.y - this.vel.y) * blend
+    this.vel.z += (move.z - this.vel.z) * blend
+    this.vel.addScaledVector(up, along)
 
     if (!this.grounded && gMag > 0.01) {
       this.vel.addScaledVector(down, gMag * dt)

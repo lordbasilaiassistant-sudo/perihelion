@@ -14,13 +14,6 @@ export class Input {
   attach(el: HTMLElement): void {
     this.el = el
     window.addEventListener('keydown', (e) => {
-      if (e.code === 'Backquote') {
-        const el = document.documentElement
-        el.dataset.bqKeydowns = String((Number(el.dataset.bqKeydowns) || 0) + 1)
-      }
-      const del = document.documentElement
-      del.dataset.lastKd = e.code
-      del.dataset.kdEnabled = String(this.enabled)
       if (!this.enabled && e.code !== 'Escape') return
       if (GAME_KEYS.has(e.code) || e.code.startsWith('Arrow')) e.preventDefault()
       if (!e.repeat) this.edges.add(e.code)
@@ -63,7 +56,18 @@ export class Input {
   }
 
   requestLock(): void {
-    void this.el?.requestPointerLock()
+    const el = this.el
+    if (!el || typeof el.requestPointerLock !== 'function') return
+    try {
+      const pending = el.requestPointerLock()
+      if (pending && typeof pending.then === 'function') {
+        void pending.catch((err: unknown) => {
+          console.info('[input] pointer lock unavailable', err)
+        })
+      }
+    } catch (err) {
+      console.info('[input] pointer lock unavailable', err)
+    }
   }
 
   releaseLock(): void {

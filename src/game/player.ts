@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 import { CharacterBody } from '../physics/charController'
 import type RAPIER from '@dimforge/rapier3d-compat'
-import { gravityAt, pickField, tangentialVelocity, type GravityField, type Vec3 } from '../physics/gravity'
+import { gravityAt, pickField, upFromGravity, type GravityField, type Vec3 } from '../physics/gravity'
 import { WALK_G_THRESHOLD } from './shipBuilder'
 
 export interface CamBasis {
@@ -115,6 +115,8 @@ export class Player {
   private stepAccum = 0
   onFootstep: (() => void) | null = null
   private tmpQ = new THREE.Quaternion()
+  private tmpUp = new THREE.Vector3(0, 1, 0)
+  private worldUp = new THREE.Vector3(0, 1, 0)
 
   constructor(API: typeof RAPIER, physicsCtor: { world: import('@dimforge/rapier3d-compat').World }, spawn: THREE.Vector3) {
     this.char = new CharacterBody(API, physicsCtor.world as import('@dimforge/rapier3d-compat').World, spawn)
@@ -183,18 +185,15 @@ export class Player {
   }
 
   tick(dt: number, intent: import('../physics/charController').MoveIntent, spaceHeld: boolean, spacePressed: boolean, rPressed: boolean): void {
-    const basis = this.basis()
     const prevMode = this.char.mode
     const wantWalk = this.gMag >= WALK_G_THRESHOLD
-    if (wantWalk && prevMode === 'thrust' && this.currentField?.kind === 'radial') {
-      const tv = tangentialVelocity(this.currentField, [this.char.currPos.x, this.char.currPos.y, this.char.currPos.z])
-      this.char.vel.add(new THREE.Vector3(tv[0], tv[1], tv[2]))
-    }
     if (rPressed) this.char.stabilizers = !this.char.stabilizers
 
     this.thrusting = false
 
     if (inLadderShaft(this.char.currPos)) {
+      this.char.setUp(this.worldUp, true)
+      const basis = this.basis()
       this.char.mode = 'walk'
       const lookUp = basis.fwd.y >= 0 ? 1 : -1
       let climb = intent.vertical + intent.moveZ * lookUp
@@ -204,6 +203,16 @@ export class Player {
       this.char.tickLadder(dt, climb, latX, latZ)
       return
     }
+
+    if (this.gMag >= 1e-4) {
+      const u = upFromGravity([this.gVec.x, this.gVec.y, this.gVec.z])
+      this.tmpUp.set(u[0], u[1], u[2])
+      this.char.setUp(this.tmpUp, wantWalk && prevMode === 'thrust')
+    } else {
+      this.char.setUp(this.worldUp)
+    }
+
+    const basis = this.basis()
 
     if (wantWalk) {
       this.char.mode = 'walk'
@@ -215,7 +224,9 @@ export class Player {
         this.char.vel.addScaledVector(basis.up, SUIT_ASSIST_ACCEL * dt)
       }
       this.char.tickWalk(dt, intent, basis, this.gVec, this.gMag)
-      const speed = Math.hypot(this.char.vel.x, this.char.vel.z)
+      const up = this.char.upSmoothSafe()
+      const along = this.char.vel.dot(up)
+      const speed = Math.sqrt(Math.max(0, this.char.vel.lengthSq() - along * along))
       if (this.char.grounded && speed > 0.4) {
         this.stepAccum += speed * dt
         this.bobPhase += speed * dt * 3.4
@@ -257,9 +268,6 @@ export class Player {
     }
     camera.lookAt(target)
     camera.updateMatrixWorld(true)
-    const el = document.documentElement
-    el.dataset.pfFwd = `${basis.fwd.x.toFixed(3)},${basis.fwd.y.toFixed(3)},${basis.fwd.z.toFixed(3)}`
-    el.dataset.pfCount = String((Number(el.dataset.pfCount) ?? 0) + 1)
 
     this.avatarRoot.position.copy(ip).addScaledVector(basis.up, -0.89)
     const faceQ = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), this.yaw)

@@ -10,11 +10,20 @@ function showError(msg: string): void {
   banner.textContent = msg
 }
 
+function isBenignLockError(reason: unknown): boolean {
+  const msg = String(reason)
+  return /pointer lock|WrongDocumentError|SecurityError|NotAllowedError/i.test(msg)
+}
+
 window.addEventListener('error', (e) => {
   showError(`Runtime error: ${e.message}`)
 })
 
 window.addEventListener('unhandledrejection', (e) => {
+  if (isBenignLockError((e as PromiseRejectionEvent).reason)) {
+    e.preventDefault()
+    return
+  }
   showError(`Async error: ${String((e as PromiseRejectionEvent).reason)}`)
 })
 
@@ -55,6 +64,7 @@ async function boot(): Promise<void> {
           app.audio.unlock()
           await fn()
           title.classList.add('gone')
+          title.addEventListener('transitionend', () => title.classList.add('hidden'), { once: true })
           app.input.requestLock()
         } catch (err) {
           showError(String(err))

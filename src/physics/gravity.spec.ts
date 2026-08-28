@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { gravityAt, pickField, tangentialVelocity, fieldContains, type RadialField, type GradientField, type Vec3 } from './gravity'
+import { gravityAt, pickField, tangentialVelocity, fieldContains, upFromGravity, type RadialField, type GradientField, type Vec3 } from './gravity'
 
 const v = (x: number, y: number, z: number): Vec3 => [x, y, z]
 
@@ -72,6 +72,19 @@ describe('gradient spoke field', () => {
   it('is zero beyond its ends', () => {
     expect(gravityAt(spoke, v(0, 1.5, -4))).toEqual([0, 0, 0])
     expect(gravityAt(spoke, v(0, 7, -4))).toEqual([0, 0, 0])
+  })
+})
+
+describe('upFromGravity', () => {
+  it('points opposite the gravity vector', () => {
+    const u = upFromGravity([4.9, 0, 0])
+    expect(u[0]).toBeCloseTo(-1, 5)
+    expect(u[1]).toBeCloseTo(0, 5)
+    expect(u[2]).toBeCloseTo(0, 5)
+  })
+
+  it('falls back to world +Y when weightless', () => {
+    expect(upFromGravity([0, 0, 0])).toEqual([0, 1, 0])
   })
 })
 

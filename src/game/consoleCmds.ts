@@ -25,8 +25,6 @@ export class ConsoleUI {
 
   toggle(): boolean {
     this.visible = !this.visible
-    const el = document.documentElement
-    el.dataset.consoleToggles = String((Number(el.dataset.consoleToggles) || 0) + 1)
     document.getElementById('console-panel')?.classList.toggle('hidden', !this.visible)
     this.onToggleChange?.(this.visible)
     if (this.visible) {
